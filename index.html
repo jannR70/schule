@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Lernzettel-Übersicht</title>
+  
+  <!-- Externe Datendatei einbinden -->
+  <script src="quelle.js"></script>
+
   <style>
     :root {
       --primary: #4f46e5;
@@ -25,14 +29,13 @@
     html, body {
       width: 100vw;
       height: 100vh;
-      overflow: hidden; /* Verhindert Scrollbalken auf der Hauptseite */
+      overflow: hidden;
       background-color: var(--bg-color);
       color: var(--text-main);
       display: flex;
       flex-direction: column;
     }
 
-    /* Feste Navigationsleiste oben */
     header {
       background-color: var(--nav-bg);
       border-bottom: 1px solid var(--border-color);
@@ -40,7 +43,7 @@
       display: flex;
       align-items: center;
       gap: 1rem;
-      flex-shrink: 0; /* Verhindert, dass die Leiste gestaucht wird */
+      flex-shrink: 0;
       height: 60px;
     }
 
@@ -53,7 +56,6 @@
       white-space: nowrap;
     }
 
-    /* Navigation zum Hin- und Herschalten */
     .nav-tabs-wrapper {
       display: flex;
       align-items: center;
@@ -98,7 +100,6 @@
       font-size: 0.75rem;
     }
 
-    /* Link zum externen Öffnen/Download */
     .download-link {
       color: var(--text-muted);
       text-decoration: none;
@@ -115,7 +116,6 @@
       color: var(--text-main);
     }
 
-    /* Hauptbereich nimmt 100% der restlichen Höhe & Breite ein */
     main {
       flex: 1;
       width: 100%;
@@ -128,10 +128,9 @@
       height: 100%;
       border: none;
       display: block;
-      background-color: #ffffff; /* Weisser Hintergrund für Dokumente */
+      background-color: #ffffff;
     }
 
-    /* Fallback-Meldung, falls Frame nicht unterstützt wird */
     .fallback-message {
       padding: 3rem;
       text-align: center;
@@ -153,22 +152,19 @@
 </head>
 <body>
 
-  <!-- Obere Navigationsleiste -->
   <header>
     <div class="logo-title">
       <span>📚</span>
       <span>Lernzettel</span>
     </div>
 
-    <!-- Leiste zum Hin- und Herschalten zwischen allen Zetteln -->
     <nav class="nav-tabs-wrapper" id="tabsContainer">
-      <!-- Tabs werden dynamisch aus quelle.json geladen -->
+      <!-- Tabs werden dynamisch geladen -->
     </nav>
 
     <a id="downloadBtn" class="download-link" href="#" target="_blank" title="In neuem Tab öffnen">↗️ Extern öffnen</a>
   </header>
 
-  <!-- Vollbild-Viewer -->
   <main>
     <object id="docViewer" class="viewer-frame" data="" type="application/pdf">
       <iframe id="docIframe" class="viewer-frame" src="">
@@ -181,27 +177,17 @@
   </main>
 
   <script>
-    let lernzettelData = [];
-
-    // JSON-Daten laden
-    async function loadLernzettel() {
-      try {
-        const response = await fetch('quelle.json');
-        if (!response.ok) throw new Error('Fehler beim Laden der quelle.json');
-        lernzettelData = await response.json();
-
-        if (lernzettelData.length > 0) {
-          renderTabs();
-          // Ersten Lernzettel standardmäßig öffnen
-          openDocument(lernzettelData[0].id);
-        }
-      } catch (error) {
-        console.error(error);
-        document.body.innerHTML = '<div class="fallback-message"><p style="color: #ef4444;">Fehler: Die Datei <b>quelle.json</b> konnte nicht geladen werden.</p></div>';
+    function initPortal() {
+      // Prüfen, ob die Variable aus quelle.js geladen wurde
+      if (typeof lernzettelData !== 'undefined' && lernzettelData.length > 0) {
+        renderTabs();
+        openDocument(lernzettelData[0].id);
+      } else {
+        console.error("quelle.js wurde nicht gefunden oder ist leer.");
+        document.body.innerHTML = '<div class="fallback-message"><p style="color: #ef4444;">Fehler: Die Datei <b>quelle.js</b> konnte nicht geladen werden.</p></div>';
       }
     }
 
-    // Tabs in der Kopfzeile erzeugen
     function renderTabs() {
       const container = document.getElementById('tabsContainer');
       container.innerHTML = '';
@@ -219,12 +205,10 @@
       });
     }
 
-    // Dokument im Vollbild-Frame anzeigen & Tab aktivieren
     function openDocument(id) {
       const item = lernzettelData.find(d => d.id === id);
       if (!item) return;
 
-      // Active-Status der Buttons aktualisieren
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       const activeTab = document.getElementById(`tab-${id}`);
       if (activeTab) {
@@ -232,20 +216,18 @@
         activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
       }
 
-      // Viewer-Quellen aktualisieren
       const viewer = document.getElementById('docViewer');
       const iframe = document.getElementById('docIframe');
       const downloadBtn = document.getElementById('downloadBtn');
       const fallbackLink = document.getElementById('fallbackLink');
 
-      viewer.data = item.dateiUrl;
-      iframe.src = item.dateiUrl;
-      downloadBtn.href = item.dateiUrl;
-      fallbackLink.href = item.dateiUrl;
+      if (viewer) viewer.data = item.dateiUrl;
+      if (iframe) iframe.src = item.dateiUrl;
+      if (downloadBtn) downloadBtn.href = item.dateiUrl;
+      if (fallbackLink) fallbackLink.href = item.dateiUrl;
     }
 
-    // Initialisierung
-    document.addEventListener('DOMContentLoaded', loadLernzettel);
+    document.addEventListener('DOMContentLoaded', initPortal);
   </script>
 </body>
 </html>
