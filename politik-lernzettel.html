@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Politik Lernzettel 2FOS261</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--text:#1d2433;--muted:#5d6678;--accent:#2f5fb3;--accent2:#e07b2a;--ok:#2e8b57;--bad:#c0392b;--line:#dde2ee;--soft:#e8effb}
+@media (prefers-color-scheme:dark){:root{--bg:#12161f;--card:#1b212d;--text:#e6e9f0;--muted:#9aa3b5;--accent:#6b9bff;--accent2:#ffa45c;--ok:#4fc88a;--bad:#ff7b6b;--line:#2c3446;--soft:#222b3d}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+header{padding:20px 16px 8px;max-width:960px;margin:auto}
+h1{margin:0;font-size:1.6rem}
+header p{margin:4px 0 0;color:var(--muted)}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding:8px 16px}
+.tabs{max-width:960px;margin:auto;display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.tabs button{white-space:nowrap;border:1px solid var(--line);background:var(--card);color:var(--text);padding:7px 12px;border-radius:999px;cursor:pointer;font-size:.9rem}
+.tabs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+main{max-width:960px;margin:auto;padding:16px}
+.bar{height:8px;background:var(--line);border-radius:8px;overflow:hidden;margin:10px 0 0}
+.bar i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;margin:12px 0;overflow:hidden}
+.card>button.h{all:unset;box-sizing:border-box;display:flex;justify-content:space-between;align-items:center;width:100%;padding:14px 16px;cursor:pointer;font-weight:600}
+.card>button.h:focus-visible{outline:2px solid var(--accent)}
+.card .b{display:none;padding:0 16px 14px}
+.card.open .b{display:block}
+.card.open .chev{transform:rotate(90deg)}
+.chev{transition:.2s;color:var(--muted)}
+.b ul{margin:6px 0 6px 18px;padding:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chip{background:var(--soft);color:var(--accent);padding:6px 12px;border-radius:10px;font-weight:600;font-size:.92rem}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0}
+.flow span.s{background:var(--soft);border:1px solid var(--line);padding:8px 10px;border-radius:10px;font-size:.88rem}
+.flow span.a{color:var(--accent2);font-weight:700}
+.note{background:var(--soft);border-left:4px solid var(--accent2);padding:8px 12px;border-radius:8px;margin:8px 0;font-size:.92rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:8px 0}
+.grid div{background:var(--soft);border-radius:10px;padding:10px}
+.grid b{display:block;color:var(--accent)}
+.btn{border:1px solid var(--accent);background:var(--accent);color:#fff;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:.95rem}
+.btn.alt{background:transparent;color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.fc{perspective:900px;margin:14px 0}
+.fc .in{position:relative;min-height:200px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+.fc.flip .in{transform:rotateY(180deg)}
+.fc .f,.fc .k{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;font-size:1.15rem;border:1px solid var(--line)}
+.fc .f{background:var(--card)}
+.fc .k{background:var(--accent);color:#fff;transform:rotateY(180deg)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:11px 14px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;cursor:pointer;font-size:.97rem}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.ok{background:var(--ok);color:#fff;border-color:var(--ok)}
+.opt.bad{background:var(--bad);color:#fff;border-color:var(--bad)}
+.ord{display:flex;flex-direction:column;gap:8px}
+.ord button{text-align:left;padding:11px 14px;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:10px;cursor:pointer;font-size:.95rem}
+.ord button.used{opacity:.4}
+.slot{padding:9px 12px;border-radius:10px;margin:6px 0;background:var(--soft)}
+.slot.ok{background:var(--ok);color:#fff}.slot.bad{background:var(--bad);color:#fff}
+.muted{color:var(--muted)}
+.done{color:var(--ok);font-weight:600}
+</style>
+</head>
+<body>
+<header>
+  <h1>Politik – Lernzettel 2FOS261</h1>
+  <p>Lesen, Karteikarten, Quiz und Reihenfolge-Übung. Dein Fortschritt wird auf diesem Gerät gespeichert.</p>
+  <div class="bar" aria-label="Fortschritt"><i id="prog"></i></div>
+  <p id="progtxt" class="muted" style="font-size:.85rem"></p>
+</header>
+<nav><div class="tabs" id="tabs"></div></nav>
+<main id="main"></main>
+
+<script>
+// ---------- Speicher (nur Komfort, mit try/catch) ----------
+var store={get:function(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+var known=store.get('pol_known',{});   // Karteikarten gewusst
+var seen=store.get('pol_seen',{});     // Themenkarten geöffnet
+
+// ---------- Inhalte ----------
+var topics=[
+{id:'staat',title:'Staat & Grundgesetz',cards:[
+ {t:'Was ist ein Staat?',h:'<div class="chips"><span class="chip">Volk</span><span class="chip">Staatsgebiet</span><span class="chip">Staatsgewalt</span></div>'},
+ {t:'Grundgesetz',h:'<p>Die <b>Verfassung Deutschlands</b>. Es legt Grundrechte und wichtige Regeln für den Staat fest.</p>'},
+ {t:'Grundrechte',h:'<p>Vor allem die <b>ersten 19 Artikel</b>, z. B.:</p><ul><li>Schutz des Lebens</li><li>Meinungs- und Religionsfreiheit</li><li>Gleichberechtigung</li><li>Versammlungsfreiheit</li></ul>'},
+ {t:'Welche Staatsziele haben wir?',h:'<div class="chips"><span class="chip">Demokratie</span><span class="chip">Rechtsstaat</span><span class="chip">Sozialstaat</span></div>'}
+]},
+{id:'organe',title:'Staatsorgane',cards:[
+ {t:'Bundestag',h:'<p>Das <b>Parlament</b> der Bundesrepublik Deutschland.</p><p><b>Wichtigste Aufgaben:</b></p><ul><li>Gesetze beschließen</li><li>Wahl des Bundeskanzlers</li></ul>'},
+ {t:'Koalition & Koalitionsvertrag',h:'<ul><li><b>Koalition:</b> Zusammenschluss aus zwei oder mehr Parteien</li><li>Wird gebildet, wenn eine Partei <b>keine Mehrheit</b> hat</li><li><b>Koalitionsvertrag:</b> Vereinbarung zwischen Parteien, die gemeinsam regieren</li></ul>'},
+ {t:'Bundespräsident, Bundeskanzler, Minister',h:'<div class="grid"><div><b>Bundespräsident</b>vertritt den Staat und unterschreibt Gesetze</div><div><b>Bundeskanzler</b>Chef der Regierung</div><div><b>Minister</b>leiten ihr eigenes Ressort</div></div>'},
+ {t:'Aufgaben des Kanzlers',h:'<ul><li>Bestimmt die <b>Richtlinien</b></li><li>Gibt die politische Richtung vor</li><li>Schlägt die Minister vor</li></ul>'},
+ {t:'Bundesrat',h:'<p><b>Aufbau:</b> Vertreter der Landesregierungen.</p><p><b>Aufgaben:</b></p><ul><li>Kann Gesetzesvorschläge machen</li><li>Kann Einspruch erheben</li></ul>'},
+ {t:'Wie entsteht ein Gesetz?',h:'<div class="flow"><span class="s">1 Was kann man ändern?</span><span class="a">→</span><span class="s">2 Bundesrat: 6 Wochen Zeit</span><span class="a">→</span><span class="s">3 Bundestag: 3 Lesungen</span><span class="a">→</span><span class="s">4 2. und 3. Lesung: Änderungsvorschläge & Entwurf</span><span class="a">→</span><span class="s">5 Prüfung vom Bundesrat</span><span class="a">→</span><span class="s">6 Unterzeichnung Bundespräsident</span><span class="a">→</span><span class="s">7 Bundesgesetzblatt</span></div><div class="note">Übe die Reihenfolge im Tab „Reihenfolge“.</div>'},
+ {t:'Gewaltenteilung',h:'<div class="grid"><div><b>Legislative</b>stellt die Gesetze auf</div><div><b>Exekutive</b>Regierung, Verwaltung, Ämter und Behörden führen Gesetze aus (z. B. Polizei)</div><div><b>Judikative</b>Überprüfung der Rechtmäßigkeit durch die Gerichte</div></div>'},
+ {t:'Die vierte Gewalt',h:'<p><b>Medien</b> (Zeitungen, Fernsehen, Internet …)</p><p><b>Warum gibt es sie?</b></p><ul><li>Schauen den Politikern auf die Finger</li><li>Meinungsbildung</li><li>Nachrichten</li></ul>'},
+ {t:'Bundesverfassungsgericht',h:'<p><b>Überwacht die Verfassungsorgane.</b></p>'}
+]},
+{id:'parteien',title:'Parteien & Ideologien',cards:[
+ {t:'Rechts – Links: Woher stammt das?',h:'<p>Aus dem Jahr <b>1789 in Frankreich</b>. Beschreibt die politische Haltung:</p><div class="grid"><div><b>Links</b>Radikalen, Staat-Veränderung</div><div><b>Rechts</b>Konservativ, keine Veränderung, alles bleibt beim Alten</div></div>'},
+ {t:'Farben: Rot & Schwarz',h:'<div class="grid"><div><b style="color:#d33">Rot</b>Revolution, Sozialisten, Kommunisten</div><div><b>Schwarz</b>Uraltes Symbol für die Leiden Christi und für die Bußfertigkeit (CDU/CSU)</div></div>'},
+ {t:'Kapitalismus vs. Kommunismus',h:'<div class="grid"><div><b>Kapitalismus</b>Menschen besitzen die Produktionsmittel. Ziel: möglichst hohe Gewinnerzielung</div><div><b>Kommunismus</b>Produktionsmittel gehören der Gemeinschaft, persönliche Gegenstände nicht</div></div>'},
+ {t:'Finanzen der Parteien',h:'<div class="grid"><div><b style="color:var(--ok)">Geld kommt rein</b>Mitgliedsbeiträge<br>Spenden<br>Staatliche Förderung</div><div><b>Geld geht raus</b>Wahlkampf<br>Werbung<br>Büros &amp; Mitarbeiter<br>Veranstaltungen</div></div>'}
+]},
+{id:'lobby',title:'Lobbyismus',cards:[
+ {t:'Was ist Lobbyismus?',h:'<p>Gezielte Einflussnahme von Vertretern, Verbänden und Organisationen auf politische Entscheidungsträger (Abgeordnete, Minister).</p><p><b>Herkunft:</b> von „Lobby“ – der Empfangshalle des Parlaments.</p>'},
+ {t:'Vorteile',h:'<ul><li><b>Rolle in der Demokratie:</b> Politiker sind keine Experten für jedes Thema. Lobbyisten liefern Fachwissen, Daten und Praxiseinblicke für eine fundierte Gesetzgebung.</li><li><b>Menschennähe:</b> bringt die Politik näher an die Realität der Menschen und der Wirtschaft.</li></ul>'},
+ {t:'Nachteile',h:'<ul><li><b>Ungleiche Machtverteilung:</b> finanzstarke Verbände (Konzerne, Finanzlobby, Ölindustrie) haben mehr Geld für Personal, Gutachten, Studien und Kampagnen.</li><li><b>Korruption:</b> Intransparenz und Skandale können zu Gesetzen führen, die nur einzelnen Firmen nützen.</li></ul>'}
+]},
+{id:'geld',title:'Staatsfinanzen',cards:[
+ {t:'Woher bekommt der Staat sein Geld?',h:'<div class="grid"><div><b>Steuern</b>wichtigste Quelle (z. B. Einkommen- &amp; Mehrwertsteuer), ohne direkte Gegenleistung</div><div><b>Kredite</b>Staat leiht sich Geld über Staatsanleihen → Schulden</div><div><b>Beiträge</b>z. B. für die Sozialversicherung</div><div><b>Gebühren</b>Zahlungen für konkrete Leistungen (z. B. Ausweis, Müllabfuhr)</div></div>'},
+ {t:'Wo ist die Verbindung?',h:'<div class="flow"><span class="s"><b>1 Steuern</b><br>Bürger und Unternehmen zahlen Steuern</span><span class="a">→</span><span class="s"><b>2 Einnahmen</b><br>Alle Steuern fließen zusammen</span><span class="a">→</span><span class="s"><b>3 Staatshaushalt</b><br>Der Bundestag plant, wie viel Geld wofür da ist</span><span class="a">→</span><span class="s"><b>4 Ausgaben</b><br>Schulen, Straßen …</span></div><div class="note">Aus unseren Steuern wird der Staatshaushalt – und der finanziert alle staatlichen Aufgaben.</div>'}
+]},
+{id:'notstand',title:'Datenschutz & Notstand',cards:[
+ {t:'Datenschutz – Rechte der Betroffenen',h:'<div class="chips"><span class="chip">Auskunft</span><span class="chip">Berichtigung</span><span class="chip">Löschung</span><span class="chip">Widerspruchsrecht</span><span class="chip">Zweckbindung</span></div>'},
+ {t:'Der V-Fall (Verteidigungsfall)',h:'<div class="flow"><span class="s">Verteidigungsfall tritt ein</span><span class="a">→</span><span class="s">Notstandsgesetze greifen<br><small>Grundrechte einschränkbar</small></span><span class="a">→</span><span class="s">Bundestag handlungsunfähig</span><span class="a">→</span><span class="s">Gemeinsamer Ausschuss wird gebildet</span></div>'},
+ {t:'Innerer Notstand',h:'<div class="flow"><span class="s">Innenpolitischer Notstand<br><small>z. B. Covid-19</small></span><span class="a">→</span><span class="s">Polizei (ggf. Bundeswehr) greift ein</span><span class="a">→</span><span class="s">Notstand besteht weiter</span><span class="a">→</span><span class="s">Notstandsgesetze greifen<br><small>Grundrechte einschränkbar</small></span></div>'}
+]},
+{id:'uno',title:'UNO & Völkerrecht',cards:[
+ {t:'Warum gibt es die UNO?',h:'<ul><li>Frieden sichern</li><li>Menschenrechte schützen</li><li>International zusammenarbeiten</li></ul>'},
+ {t:'Gründung & Mitglieder',h:'<p>Gegründet <b>1945</b>, <b>193 Mitgliedsstaaten</b>.</p>'},
+ {t:'Sechs Hauptorgane',h:'<ul><li>Generalversammlung</li><li>Sicherheitsrat</li><li>Internationaler Gerichtshof</li><li>… (insgesamt sechs, verschiedene Aufgaben)</li></ul>'},
+ {t:'Der Sicherheitsrat',h:'<p><b>15 Mitglieder</b> – und ein besonderes <b>Vetorecht</b>.</p><div class="grid"><div><b>5 ständige Mitglieder</b>USA, Russland, China, Frankreich, Vereinigtes Königreich (UK)</div><div><b>10 gewählte Mitglieder</b></div></div>'},
+ {t:'Völkerrecht & IStGH',h:'<ul><li>Völkerrecht: gemeinsame, <b>verbindliche</b> Regeln – aber oft schwer durchzusetzen</li><li>Der <b>IStGH</b> (Internationaler Strafgerichtshof) verfolgt <b>Einzelpersonen</b></li><li>Schwerste Verbrechen sollen nicht straflos bleiben</li></ul>'}
+]}
+];
+
+var flash=[
+["Drei Elemente eines Staates?","Volk, Staatsgebiet, Staatsgewalt"],
+["Was ist das Grundgesetz?","Die Verfassung Deutschlands: legt Grundrechte und wichtige Regeln für den Staat fest."],
+["Welche Staatsziele haben wir?","Demokratie, Rechtsstaat, Sozialstaat"],
+["Aufgaben des Bundestages?","Gesetze beschließen und den Bundeskanzler wählen."],
+["Was ist eine Koalition?","Zusammenschluss aus zwei oder mehr Parteien, wenn eine Partei keine Mehrheit hat."],
+["Was ist der Koalitionsvertrag?","Vereinbarung zwischen Parteien, die gemeinsam regieren."],
+["Aufgabe des Bundespräsidenten?","Vertritt den Staat und unterschreibt Gesetze."],
+["Was bestimmt der Kanzler?","Die Richtlinien; er gibt die politische Richtung vor und schlägt die Minister vor."],
+["Wie ist der Bundesrat aufgebaut?","Vertreter der Landesregierungen."],
+["Was darf der Bundesrat?","Gesetzesvorschläge machen und Einspruch erheben."],
+["Legislative / Exekutive / Judikative?","Gesetze aufstellen / Gesetze ausführen (Regierung, Behörden, Polizei) / Rechtmäßigkeit prüfen (Gerichte)."],
+["Was ist die vierte Gewalt?","Die Medien: schauen Politikern auf die Finger, Meinungsbildung, Nachrichten."],
+["Was macht das Bundesverfassungsgericht?","Überwacht die Verfassungsorgane."],
+["Woher stammt rechts–links?","Aus dem Jahr 1789 in Frankreich."],
+["Was bedeutet links, was rechts?","Links: Radikalen, Staat-Veränderung. Rechts: konservativ, alles bleibt beim Alten."],
+["Wofür steht Rot, wofür Schwarz?","Rot: Revolution, Sozialisten, Kommunisten. Schwarz: Leiden Christi/Bußfertigkeit (CDU/CSU)."],
+["Kapitalismus?","Menschen besitzen die Produktionsmittel; Ziel ist möglichst hohe Gewinnerzielung."],
+["Kommunismus?","Produktionsmittel gehören der Gemeinschaft, persönliche Gegenstände nicht."],
+["Was ist Lobbyismus?","Gezielte Einflussnahme von Vertretern, Verbänden und Organisationen auf politische Entscheidungsträger."],
+["Woher kommt das Wort Lobby?","Empfangshalle des Parlaments."],
+["Vorteile des Lobbyismus?","Fachwissen, Daten und Praxiseinblicke; Politik näher an der Realität von Menschen und Wirtschaft."],
+["Nachteile des Lobbyismus?","Ungleiche Machtverteilung (finanzstarke Verbände) und Korruption durch Intransparenz."],
+["Vier Einnahmequellen des Staates?","Steuern, Kredite, Beiträge, Gebühren."],
+["Einnahmen der Parteien?","Mitgliedsbeiträge, Spenden, staatliche Förderung."],
+["Ausgaben der Parteien?","Wahlkampf, Werbung, Büros & Mitarbeiter, Veranstaltungen."],
+["Rechte der Betroffenen beim Datenschutz?","Auskunft, Berichtigung, Löschung, Widerspruchsrecht, Zweckbindung."],
+["Ablauf im Verteidigungsfall?","V-Fall tritt ein → Notstandsgesetze greifen (Grundrechte einschränkbar) → Bundestag handlungsunfähig → Gemeinsamer Ausschuss wird gebildet."],
+["Ablauf beim inneren Notstand?","Innenpolitischer Notstand (z. B. Covid-19) → Polizei (ggf. Bundeswehr) greift ein → Notstand besteht weiter → Notstandsgesetze greifen."],
+["Warum gibt es die UNO?","Frieden sichern, Menschenrechte schützen, international zusammenarbeiten."],
+["Gründung und Mitglieder der UNO?","1945; 193 Mitgliedsstaaten."],
+["Wie viele Mitglieder hat der Sicherheitsrat?","15: 5 ständige (USA, Russland, China, Frankreich, UK) mit Vetorecht und 10 gewählte."],
+["Was verfolgt der IStGH?","Einzelpersonen; schwerste Verbrechen sollen nicht straflos bleiben."]
+];
+
+var quiz=[
+{q:"Welche drei Elemente gehören zu einem Staat?",o:["Volk, Staatsgebiet, Staatsgewalt","Volk, Parlament, Regierung","Gebiet, Armee, Währung","Verfassung, Gericht, Polizei"],c:0},
+{q:"Welche Staatsziele nennt der Lernzettel?",o:["Demokratie, Rechtsstaat, Sozialstaat","Monarchie, Rechtsstaat, Wirtschaftsstaat","Demokratie, Militärstaat, Sozialstaat","Föderalismus, Kapitalismus, Rechtsstaat"],c:0},
+{q:"Wer wählt den Bundeskanzler?",o:["Der Bundesrat","Der Bundestag","Der Bundespräsident","Das Bundesverfassungsgericht"],c:1},
+{q:"Wer unterschreibt Gesetze?",o:["Der Bundeskanzler","Der Bundestagspräsident","Der Bundespräsident","Der Bundesrat"],c:2},
+{q:"Wer bestimmt die Richtlinien der Politik?",o:["Der Bundespräsident","Die Minister","Der Bundesrat","Der Kanzler"],c:3},
+{q:"Woraus besteht der Bundesrat?",o:["Vertretern der Landesregierungen","Direkt gewählten Abgeordneten","Richtern","Ministern des Bundes"],c:0},
+{q:"Was gehört zur Exekutive?",o:["Der Bundestag","Die Gerichte","Die Medien","Regierung, Verwaltung und Polizei"],c:3},
+{q:"Was ist die „vierte Gewalt“?",o:["Die Medien","Die Bundeswehr","Der Bundesrat","Die Parteien"],c:0},
+{q:"Woher stammt die Einteilung rechts–links?",o:["Aus England, 1688","Aus Frankreich, 1789","Aus Deutschland, 1949","Aus Russland, 1917"],c:1},
+{q:"Für welche Parteien steht Schwarz laut Lernzettel?",o:["SPD","Die Linke","CDU/CSU","Grüne"],c:2},
+{q:"Was ist die wichtigste Einnahmequelle des Staates?",o:["Gebühren","Kredite","Beiträge","Steuern"],c:3},
+{q:"Was ist ein Beispiel für eine Gebühr?",o:["Einkommensteuer","Ausweis","Mehrwertsteuer","Staatsanleihe"],c:1},
+{q:"Was ist ein Nachteil von Lobbyismus?",o:["Mehr Fachwissen","Zu viel Transparenz","Ungleiche Machtverteilung","Zu wenig Einfluss der Wirtschaft"],c:2},
+{q:"Welches Recht gehört zu den Rechten der Betroffenen beim Datenschutz?",o:["Löschung","Veto","Koalition","Gewaltenteilung"],c:0},
+{q:"Was wird im Verteidigungsfall gebildet, wenn der Bundestag handlungsunfähig ist?",o:["Ein Bundesrat","Ein Gemeinsamer Ausschuss","Ein Verfassungsgericht","Ein Koalitionsausschuss"],c:1},
+{q:"Wann wurde die UNO gegründet und wie viele Mitglieder hat sie?",o:["1919; 58","1945; 193","1949; 100","1990; 200"],c:1},
+{q:"Wie viele ständige Mitglieder hat der UN-Sicherheitsrat?",o:["3","10","5","15"],c:2},
+{q:"Wen verfolgt der IStGH?",o:["Staaten","Einzelpersonen","Unternehmen","Parteien"],c:1}
+];
+
+var order=["Was kann man ändern?","Bundesrat hat 6 Wochen Zeit","Im Bundestag gibt es 3 Lesungen","Bei der 2. und 3. Lesung: Änderungsvorschläge und Entwurf","Prüfung vom Bundesrat","Unterzeichnung vom Bundespräsidenten","Bundesgesetzblatt"];
+
+// ---------- Hilfen ----------
+function $(id){return document.getElementById(id)}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+var tabs=topics.map(function(t){return{id:t.id,label:t.title}}).concat([{id:'flash',label:'Karteikarten'},{id:'quiz',label:'Quiz'},{id:'order',label:'Reihenfolge'}]);
+var current=tabs[0].id;
+
+function updateProgress(){
+  var total=topics.reduce(function(n,t){return n+t.cards.length},0);
+  var s=Object.keys(seen).length, k=Object.keys(known).length;
+  var pct=Math.round(((s/total)+(k/flash.length))/2*100);
+  $('prog').style.width=pct+'%';
+  $('progtxt').textContent='Gelesen: '+s+'/'+total+' · Karteikarten gewusst: '+k+'/'+flash.length;
+}
+
+function renderTabs(){
+  $('tabs').innerHTML='';
+  tabs.forEach(function(t){
+    var b=document.createElement('button');
+    b.textContent=t.label;
+    if(t.id===current)b.className='on';
+    b.onclick=function(){current=t.id;render();window.scrollTo(0,0)};
+    $('tabs').appendChild(b);
+  });
+}
+
+function render(){
+  renderTabs();updateProgress();
+  var t=topics.filter(function(x){return x.id===current})[0];
+  if(t)return renderTopic(t);
+  if(current==='flash')return renderFlash();
+  if(current==='quiz')return renderQuiz();
+  renderOrder();
+}
+
+// ---------- Themen ----------
+function renderTopic(t){
+  var m=$('main');m.innerHTML='<h2>'+t.title+'</h2><div class="row"><button class="btn alt" id="all">Alle auf-/zuklappen</button></div>';
+  var cards=[];
+  t.cards.forEach(function(c,i){
+    var key=t.id+i;
+    var d=document.createElement('div');d.className='card'+(seen[key]?'':'');
+    d.innerHTML='<button class="h"><span>'+(seen[key]?'<span class="done">✓ </span>':'')+c.t+'</span><span class="chev">›</span></button><div class="b">'+c.h+'</div>';
+    d.querySelector('.h').onclick=function(){
+      d.classList.toggle('open');
+      if(!seen[key]){seen[key]=1;store.set('pol_seen',seen);d.querySelector('.h span').innerHTML='<span class="done">✓ </span>'+c.t;updateProgress()}
+    };
+    cards.push(d);m.appendChild(d);
+  });
+  $('all').onclick=function(){var open=cards.some(function(c){return!c.classList.contains('open')});cards.forEach(function(c){if(open&&!c.classList.contains('open'))c.querySelector('.h').click();else if(!open)c.classList.remove('open')})};
+}
+
+// ---------- Karteikarten ----------
+var deck=[],di=0,onlyOpen=false;
+function buildDeck(){deck=shuffle(flash.map(function(_,i){return i}).filter(function(i){return!onlyOpen||!known[i]}));di=0}
+function renderFlash(){
+  if(!deck.length&&!onlyOpen)buildDeck();
+  var m=$('main');
+  if(!deck.length){m.innerHTML='<h2>Karteikarten</h2><p class="done">Alle Karten gewusst! 🎉</p><button class="btn" id="rst">Alle zurücksetzen</button>';
+    $('rst').onclick=function(){known={};store.set('pol_known',known);onlyOpen=false;deck=[];render()};return}
+  if(di>=deck.length){m.innerHTML='<h2>Karteikarten</h2><p>Runde fertig. Gewusst: '+Object.keys(known).length+'/'+flash.length+'</p><div class="row"><button class="btn" id="again">Offene Karten wiederholen</button><button class="btn alt" id="rst">Alles zurücksetzen</button></div>';
+    $('again').onclick=function(){onlyOpen=true;buildDeck();render()};
+    $('rst').onclick=function(){known={};store.set('pol_known',known);onlyOpen=false;buildDeck();render()};return}
+  var idx=deck[di],c=flash[idx];
+  m.innerHTML='<h2>Karteikarten</h2><p class="muted">Karte '+(di+1)+' von '+deck.length+(onlyOpen?' (nur offene)':'')+' · Klick zum Umdrehen</p>'+
+   '<div class="fc" id="fc"><div class="in"><div class="f">'+esc(c[0])+'</div><div class="k">'+esc(c[1])+'</div></div></div>'+
+   '<div class="row"><button class="btn" id="yes">Gewusst</button><button class="btn alt" id="no">Nochmal</button></div>';
+  $('fc').onclick=function(){this.classList.toggle('flip')};
+  $('yes').onclick=function(){known[idx]=1;store.set('pol_known',known);di++;render()};
+  $('no').onclick=function(){delete known[idx];store.set('pol_known',known);di++;render()};
+}
+
+// ---------- Quiz ----------
+var qs=[],qi=0,score=0,answered=false;
+function startQuiz(){qs=shuffle(quiz);qi=0;score=0;answered=false}
+function renderQuiz(){
+  if(!qs.length)startQuiz();
+  var m=$('main');
+  if(qi>=qs.length){var best=store.get('pol_best',0);if(score>best){best=score;store.set('pol_best',best)}
+    m.innerHTML='<h2>Quiz</h2><p style="font-size:1.3rem"><b>'+score+' / '+qs.length+'</b> richtig</p><p class="muted">Bestwert: '+best+'</p><button class="btn" id="re">Nochmal</button>';
+    $('re').onclick=function(){startQuiz();render()};return}
+  var q=qs[qi];
+  var order2=shuffle(q.o.map(function(_,i){return i}));
+  m.innerHTML='<h2>Quiz</h2><p class="muted">Frage '+(qi+1)+' von '+qs.length+' · Punkte: '+score+'</p><h3>'+q.q+'</h3><div id="opts"></div><div class="row"><button class="btn" id="next" disabled>Weiter</button></div>';
+  answered=false;
+  order2.forEach(function(oi){
+    var b=document.createElement('button');b.className='opt';b.textContent=q.o[oi];
+    b.onclick=function(){
+      if(answered)return;answered=true;
+      var all=$('opts').children;
+      for(var k=0;k<all.length;k++){all[k].disabled=true}
+      if(oi===q.c){b.classList.add('ok');score++}
+      else{b.classList.add('bad');for(var k2=0;k2<all.length;k2++){if(all[k2].textContent===q.o[q.c])all[k2].classList.add('ok')}}
+      $('next').disabled=false;
+    };
+    $('opts').appendChild(b);
+  });
+  $('next').onclick=function(){qi++;render()};
+}
+
+// ---------- Reihenfolge ----------
+var pick=[],shuf=[];
+function renderOrder(){
+  var m=$('main');
+  if(!shuf.length){shuf=shuffle(order);pick=[]}
+  var checked=pick.length===order.length;
+  var h='<h2>Wie entsteht ein Gesetz?</h2><p class="muted">Tippe die Schritte in der richtigen Reihenfolge an.</p><div class="ord" id="ord"></div><h3>Deine Reihenfolge</h3><div id="slots"></div><div class="row"><button class="btn alt" id="undo">Zurück</button><button class="btn alt" id="rs">Neu mischen</button></div><p id="res"></p>';
+  m.innerHTML=h;
+  shuf.forEach(function(s){
+    var b=document.createElement('button');b.textContent=s;
+    if(pick.indexOf(s)>-1){b.className='used';b.disabled=true}
+    b.onclick=function(){pick.push(s);renderOrder()};
+    $('ord').appendChild(b);
+  });
+  pick.forEach(function(s,i){
+    var d=document.createElement('div');d.className='slot';d.textContent=(i+1)+'. '+s;
+    if(checked)d.classList.add(order[i]===s?'ok':'bad');
+    $('slots').appendChild(d);
+  });
+  if(checked){var right=pick.filter(function(s,i){return order[i]===s}).length;
+    $('res').innerHTML=right===order.length?'<span class="done">Richtig! Alle 7 Schritte sitzen. 🎉</span>':'<b>'+right+' von 7 an der richtigen Stelle.</b> Richtige Reihenfolge:<ol>'+order.map(function(o){return'<li>'+o+'</li>'}).join('')+'</ol>'}
+  $('undo').onclick=function(){pick.pop();renderOrder()};
+  $('rs').onclick=function(){shuf=[];renderOrder()};
+}
+
+render();
+</script>
+</body>
+</html>
