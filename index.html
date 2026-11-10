@@ -1,1 +1,397 @@
-<a href="datenbanken.html">Datenbanken</a>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lernzettel-Übersicht</title>
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header & Navigation Bar */
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .logo-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-title h1 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Tabs / Leiste zur Navigation zwischen Dokumenten */
+    .nav-tabs-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.25rem;
+      scrollbar-width: thin;
+    }
+
+    .tab-btn {
+      background: #f1f5f9;
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .tab-btn:hover {
+      background: #e2e8f0;
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .tab-btn .badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    .tab-btn:not(.active) .badge {
+      background: #cbd5e1;
+      color: var(--text-main);
+    }
+
+    /* Main Container Layout */
+    main {
+      flex: 1;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    /* Grid für Lernzettel-Karten (Übersicht) */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+      margin-bottom: 0.75rem;
+    }
+
+    .card-tag {
+      display: inline-block;
+      background: #e0e7ff;
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-desc {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .card-btn {
+      margin-top: 1rem;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.2s ease;
+    }
+
+    .card-btn:hover {
+      background: var(--primary-hover);
+    }
+
+    /* Viewer Container (In-Page Ansicht) */
+    .viewer-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 75vh;
+      min-height: 500px;
+    }
+
+    .viewer-header {
+      padding: 0.75rem 1.25rem;
+      background: #f1f5f9;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .viewer-info h2 {
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .download-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .download-link:hover {
+      text-decoration: underline;
+    }
+
+    .viewer-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Native Fallback bei nicht unterstützter Vorschau */
+    .fallback-message {
+      padding: 3rem;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .fallback-message a {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    @media (min-width: 640px) {
+      .header-container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <div class="logo-title">
+        <span>📚</span>
+        <h1>Lernzettel Portal</h1>
+      </div>
+      <!-- Obere Leiste zum Wechseln der Dokumente -->
+      <nav class="nav-tabs-wrapper" id="tabsContainer">
+        <!-- Tabs werden dynamisch über JS eingefügt -->
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Bereich für den aktuell geöffneten Lernzettel -->
+    <section class="viewer-container" id="viewerSection">
+      <div class="viewer-header">
+        <div class="viewer-info">
+          <h2 id="currentDocTitle">Lernzettel Ansicht</h2>
+        </div>
+        <a id="downloadBtn" class="download-link" href="#" target="_blank">📥 In neuem Tab öffnen / Herunterladen</a>
+      </div>
+      
+      <!-- Object Tag mit Iframe-Fallback -->
+      <object id="docViewer" class="viewer-frame" data="" type="application/pdf">
+        <iframe id="docIframe" class="viewer-frame" src="">
+          <div class="fallback-message">
+            <p>Ihr Browser unterstützt das direkte Anzeigen von Vorschauen nicht.</p>
+            <p><a id="fallbackLink" href="#" target="_blank">Klicken Sie hier, um den Lernzettel zu öffnen.</a></p>
+          </div>
+        </iframe>
+      </object>
+    </section>
+
+    <!-- Kachel-Übersicht aller Lernzettel -->
+    <section>
+      <h2 style="font-size: 1.2rem; margin-bottom: 1rem;">Alle Lernzettel</h2>
+      <div class="cards-grid" id="cardsGrid">
+        <!-- Karten werden dynamisch erzeugt -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    let lernzettelData = [];
+
+    // JSON-Daten laden
+    async function loadLernzettel() {
+      try {
+        const response = await fetch('quelle.json');
+        if (!response.ok) throw new Error('Fehler beim Laden der quelle.json');
+        lernzettelData = await response.json();
+
+        if (lernzettelData.length > 0) {
+          renderTabs();
+          renderCards();
+          // Ersten Lernzettel standardmäßig öffnen
+          openDocument(lernzettelData[0].id);
+        }
+      } catch (error) {
+        console.error(error);
+        document.getElementById('cardsGrid').innerHTML = '<p style="color: red;">Fehler: Die Datei quelle.json konnte nicht geladen werden.</p>';
+      }
+    }
+
+    // Tabs in der Kopfzeile erzeugen
+    function renderTabs() {
+      const container = document.getElementById('tabsContainer');
+      container.innerHTML = '';
+
+      lernzettelData.forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn';
+        btn.id = `tab-${item.id}`;
+        btn.onclick = () => openDocument(item.id);
+        btn.innerHTML = `
+          <span>${item.titel}</span>
+          <span class="badge">${item.fach}</span>
+        `;
+        container.appendChild(btn);
+      });
+    }
+
+    // Kacheln im Hauptbereich erzeugen
+    function renderCards() {
+      const grid = document.getElementById('cardsGrid');
+      grid.innerHTML = '';
+
+      lernzettelData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="card-header">
+            <span class="card-tag">${item.fach}</span>
+            <h3 class="card-title">${item.titel}</h3>
+            <p class="card-desc">${item.beschreibung}</p>
+          </div>
+          <button class="card-btn" onclick="openDocument('${item.id}')">Anzeigen</button>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Dokument im Viewer und Tab aktivieren
+    function openDocument(id) {
+      const item = lernzettelData.find(d => d.id === id);
+      if (!item) return;
+
+      // Active state für Tabs
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const activeTab = document.getElementById(`tab-${id}`);
+      if (activeTab) {
+        activeTab.classList.add('active');
+        activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+
+      // Titel & Frame Pfade aktualisieren
+      document.getElementById('currentDocTitle').innerText = `${item.fach} - ${item.titel}`;
+      
+      const viewer = document.getElementById('docViewer');
+      const iframe = document.getElementById('docIframe');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const fallbackLink = document.getElementById('fallbackLink');
+
+      viewer.data = item.dateiUrl;
+      iframe.src = item.dateiUrl;
+      downloadBtn.href = item.dateiUrl;
+      fallbackLink.href = item.dateiUrl;
+    }
+
+    // Initialisierung beim Laden der Seite
+    document.addEventListener('DOMContentLoaded', loadLernzettel);
+  </script>
+</body>
+</html>
