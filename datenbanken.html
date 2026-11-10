@@ -80,6 +80,12 @@ svg .shape{fill:var(--card);stroke:var(--text);stroke-width:1.6}
 .bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 .fb{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--accent-soft)}
 .score{font-size:1.4rem;font-weight:700}
+.nt{font-size:1.05rem}
+.nt .at{cursor:pointer;border-radius:4px;padding:0 2px}
+.nt .at:hover{background:var(--hl)}
+.nt .at.sel{background:var(--hl)}
+.nt .fkn{color:var(--fk);font-weight:600}
+.ntline{padding:8px 12px;border:1px solid var(--line);border-radius:10px;margin:6px 0;background:var(--card)}
 .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:8px}
 </style>
 </head>
@@ -243,6 +249,45 @@ svg .shape{fill:var(--card);stroke:var(--text);stroke-width:1.6}
     <div class="btns" id="trBtns"></div>
     <div id="trOut"></div>
   </div>
+  <div class="card">
+    <h2>Schreibweise des RDBM (Kurzform)</h2>
+    <p>Jede Tabelle wird als eine Zeile geschrieben:</p>
+    <div class="ntline nt"><b>tabellenname</b> (<u>primärschlüssel</u>, attribut, <u>fremdschlüssel</u> <span class="fkn">(FK)</span>, …)</div>
+    <ul style="margin:8px 0 0;padding-left:20px">
+      <li>Tabellenname vor der Klammer, Attribute in der Klammer</li>
+      <li>Primärschlüssel wird <u>unterstrichen</u></li>
+      <li>Fremdschlüssel bekommen den Zusatz <b>(FK)</b></li>
+      <li>Ein zusammengesetzter Primärschlüssel: alle beteiligten Attribute unterstrichen</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Ergebnis RDBM – Beispiel</h2>
+    <p class="muted">Klicke auf ein Attribut, um zu sehen, was es ist. Mit den Knöpfen wechselst du die Darstellung.</p>
+    <div class="btns" id="exBtns">
+      <button class="btn on" data-v="nt">Schreibweise</button>
+      <button class="btn" data-v="tb">Tabellen</button>
+    </div>
+    <div id="exOut"></div>
+    <div class="info" id="exInfo">Klicke auf ein Attribut …</div>
+    <h3 style="margin-top:14px">Wie liest man das?</h3>
+    <div class="sent"><b>kunde</b> und <b>filiale</b> sind einfache Tabellen (Regel 1).</div>
+    <div class="sent"><b>auto</b> enthält <b>fNr (FK)</b>: Der PS der Filiale steht als Fremdschlüssel in der Tabelle <b>auto</b> (Regel 3, 1:n).</div>
+    <div class="sent"><b>warIn</b> ist die Verbindungstabelle zwischen kunde und filiale mit den Fremdschlüsseln <b>kNr</b> und <b>fNr</b> (Regel 2, m:n). Der Primärschlüssel ist hier aus <b>kNr</b> und <b>fNr</b> zusammengesetzt.</div>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<section id="s-videos">
+  <div class="card">
+    <h2>🎬 Videos</h2>
+    <h3>Wie das ER-Modell logische Datenbank-Regeln setzt</h3>
+    <video id="vid" controls preload="metadata" style="width:100%;max-height:70vh;background:#000;border-radius:10px">
+      <source src="Wie_das_ER-Modell_logische_Datenbank-Regeln_setzt.mp4" type="video/mp4">
+      <source src="Wie_das_ER-Modell_logische_Datenbank-Regeln_setzt.mpv">
+      Dein Browser kann dieses Video nicht abspielen.
+    </video>
+    <div class="info" id="vidInfo">Lege das Video in denselben Ordner wie diese HTML-Datei.</div>
+  </div>
 </section>
 
 <!-- 7 QUIZ -->
@@ -257,7 +302,7 @@ const $ = (s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySele
 const el=(t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!==undefined)e.innerHTML=h; return e;};
 
 /* Tabs */
-const tabs=[["grund","Grundbegriffe"],["pk","Primärschlüssel"],["sql","SQL"],["rel","Beziehungstypen"],["erm","ERM"],["rdbm","RDBM"],["quiz","Quiz"]];
+const tabs=[["grund","Grundbegriffe"],["pk","Primärschlüssel"],["sql","SQL"],["rel","Beziehungstypen"],["erm","ERM"],["rdbm","RDBM"],["videos","Videos"],["quiz","Quiz"]];
 const tabsEl=$("#tabs");
 function show(id){
   tabs.forEach(([k])=>{ $("#s-"+k).classList.toggle("on",k===id); });
@@ -395,6 +440,26 @@ const ermTxt={
 $$("#ermSvg g").forEach(g=>g.onclick=()=>$("#ermInfo").innerHTML=ermTxt[g.dataset.k]);
 
 /* 6 Transformator */
+/* Schreibweise: [[Attribut, Typ]] mit Typ pk | fk | pkfk | "" */
+const atInfo={pk:"<b>Primärschlüssel</b> – unterstrichen, identifiziert jeden Datensatz eindeutig.",fk:"<b>Fremdschlüssel (FK)</b> – Primärschlüssel einer anderen Tabelle.",pkfk:"<b>Teil des zusammengesetzten Primärschlüssels</b> und zugleich <b>Fremdschlüssel (FK)</b>.","":"<b>Normales Attribut</b> – eine Eigenschaft ohne Schlüsselfunktion."};
+const rn=(name,attrs)=>`<div class="ntline nt"><b>${name}</b> (`+attrs.map(([t,k])=>{
+  const inner = k==="pk"?`<u>${t}</u>`:k==="pkfk"?`<u>${t}</u> <span class="fkn">(FK)</span>`:k==="fk"?`${t} <span class="fkn">(FK)</span>`:t;
+  return `<span class="at" data-t="${k}">${inner}</span>`;
+}).join(", ")+`)</div>`;
+const tbCls=k=>k==="pkfk"?"pk fk":k;
+const tbl=(name,attrs)=>`<div><b>${name}</b><table class="db"><tr>${attrs.map(([t,k])=>`<th class="${tbCls(k)}">${t}</th>`).join("")}</tr></table></div>`;
+const trN={
+ "m:n":[["Bücher",[["BuchID","pk"],["Titel",""]]],["Ausleiher",[["AusleiherID","pk"],["Name",""]]],["ausleihen",[["AusleihID","pk"],["BuchID","fk"],["AusleiherID","fk"],["Datum",""]]]],
+ "1:n":[["Firmen",[["FirmaID","pk"],["Name",""]]],["Personen",[["PersonID","pk"],["Name",""],["FirmaID","fk"]]]],
+ "1:1":[["Männer",[["MannID","pk"],["Name",""]]],["Frauen",[["FrauID","pk"],["Name",""]]],["Ehepaare (zusammengefasst)",[["EheID","pk"],["Name Mann",""],["Name Frau",""]]]]
+};
+const exData=[["kunde",[["kNr","pk"],["name",""],["ort",""]]],["filiale",[["fNr","pk"],["ort",""]]],["auto",[["aNr","pk"],["typ",""],["fNr","fk"],["sNr",""],["filialeS",""]]],["warIn",[["kNr","pkfk"],["fNr","pkfk"],["datum",""]]]];
+let exView="nt";
+function drawEx(){
+  $("#exOut").innerHTML = exView==="nt"
+    ? exData.map(([n,a])=>rn(n,a)).join("")
+    : `<div class="tablewrap" style="display:flex;flex-wrap:wrap;gap:20px">${exData.map(([n,a])=>tbl(n,a)).join("")}</div>`;
+}
 const T=(name,cols)=>`<div><b>${name}</b><table class="db"><tr>${cols.map(([n,t])=>`<th class="${t||""}">${n}</th>`).join("")}</tr></table></div>`;
 const tr={
  "m:n":{t:"Bücher – ausleihen – Ausleiher (N:M)",r:"Regel 1 + 2",
@@ -409,7 +474,7 @@ const tr={
 };
 function drawTr(k){
   const x=tr[k];
-  $("#trOut").innerHTML=`<h3>${x.t}</h3><p><mark>${x.r}</mark></p><p>${x.txt}</p><div class="tablewrap" style="display:flex;flex-wrap:wrap;gap:20px">${x.h}</div><p class="muted"><u>unterstrichen</u> = PS · <span style="color:var(--fk)">↑</span> = FS</p>`;
+  $("#trOut").innerHTML=`<h3>${x.t}</h3><p><mark>${x.r}</mark></p><p>${x.txt}</p><div class="tablewrap" style="display:flex;flex-wrap:wrap;gap:20px">${x.h}</div><p class="muted"><u>unterstrichen</u> = PS · <span style="color:var(--fk)">↑</span> = FS</p><h3>In Schreibweise:</h3>${(trN[k]||[]).map(([n,a])=>rn(n,a)).join("")}`;
 }
 Object.keys(tr).forEach((k,i)=>{
   const b=el("button","btn"+(i?"":" on"),k.toUpperCase());
@@ -417,6 +482,24 @@ Object.keys(tr).forEach((k,i)=>{
   $("#trBtns").append(b);
 });
 drawTr("m:n");
+
+/* Beispiel-Ergebnis RDBM */
+drawEx();
+$$("#exBtns .btn").forEach(b=>b.onclick=()=>{exView=b.dataset.v;$$("#exBtns .btn").forEach(x=>x.classList.toggle("on",x===b));drawEx();});
+$("#exOut").addEventListener("click",e=>{
+  const a=e.target.closest(".at"); const th=e.target.closest("th");
+  if(a){ $$(".at.sel").forEach(x=>x.classList.remove("sel")); a.classList.add("sel"); $("#exInfo").innerHTML=atInfo[a.dataset.t]; }
+  else if(th){ const k=th.classList.contains("pk")&&th.classList.contains("fk")?"pkfk":th.classList.contains("pk")?"pk":th.classList.contains("fk")?"fk":""; $("#exInfo").innerHTML=atInfo[k]; }
+});
+$("#trOut").addEventListener("click",e=>{ const a=e.target.closest(".at"); if(a){ $$("#trOut .at.sel").forEach(x=>x.classList.remove("sel")); a.classList.add("sel"); } });
+
+/* Videos */
+(function(){
+  const v=$("#vid"), info=$("#vidInfo");
+  const srcs=$$("source",v), last=srcs[srcs.length-1];
+  last.addEventListener("error",()=>{ info.innerHTML="⚠️ Video nicht gefunden. Lege die Datei in denselben Ordner wie diese HTML-Datei (Endung <b>.mp4</b>, andere Endungen wie .mpv spielen Browser meist nicht ab)."; });
+  v.addEventListener("loadedmetadata",()=>{ info.textContent="Video geladen."; });
+})();
 
 /* 7 Quiz */
 const Q=[
@@ -430,6 +513,7 @@ const Q=[
  ["Was entsteht bei einer N:M-Beziehung im RDBM?",["Eine zusammengefasste Tabelle","Ein Fremdschlüssel auf der N-Seite","Eine neue Tabelle mit zwei Fremdschlüsseln","Nichts"],2,"Regel 2: neue Tabelle mit eigenem PS und beiden PS als Fremdschlüssel."],
  ["Was gilt bei einer 1:1-Beziehung?",["Zusammenfassen ist Pflicht","Zusammenfassen ist möglich (Kann-Regel)","Es muss eine neue Tabelle entstehen","Sie ist nicht umsetzbar"],1,"Regel 4: Zwei Entitätsmengen können zu einer Tabelle zusammengefasst werden."],
  ["Was gehört NICHT ins ERM?",["Primärschlüssel (unterstrichen)","Attribute","Fremdschlüssel","Beziehungen"],2,"Im ERM gibt es keine Fremdschlüssel – die entstehen erst beim Transformieren ins RDBM."],
+ ["Wie wird ein Fremdschlüssel in der Kurzschreibweise des RDBM gekennzeichnet?",["Unterstrichen","Mit dem Zusatz (FK)","In Klammern ohne Zusatz","Mit einem Stern"],1,"Beispiel: auto (aNr, typ, fNr (FK), …) – PS unterstrichen, FS mit (FK)."],
  ["Wie beginnen die Sätze, mit denen man eine Kardinalität bestimmt?",["Jede/Jeder …","Es gibt …","Ein/Eine …","Alle …"],2,"Zwei Sätze, die mit „ein/eine“ beginnen."]
 ];
 let qi=0,score=0,answered=false,order=[];
