@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irregular Verbs Trainer</title>
+<style>
+  :root{--bg:#f4f6fb;--card:#fff;--ink:#1d2433;--muted:#6b7589;--accent:#4f46e5;--ok:#16a34a;--bad:#dc2626;--line:#e3e7f0}
+  @media (prefers-color-scheme:dark){:root{--bg:#12141c;--card:#1b1f2b;--ink:#e8ebf4;--muted:#98a2b8;--accent:#818cf8;--line:#2b3142}}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header{padding:20px 16px 8px;text-align:center}
+  h1{margin:0;font-size:1.6rem}
+  header p{margin:4px 0 0;color:var(--muted)}
+  nav{display:flex;gap:8px;justify-content:center;padding:12px 16px;flex-wrap:wrap}
+  nav button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 18px;border-radius:999px;font-size:1rem;cursor:pointer}
+  nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+  main{max-width:760px;margin:0 auto;padding:8px 16px 40px}
+  .panel{display:none}.panel.active{display:block}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-size:.85rem;text-transform:uppercase;letter-spacing:.04em}
+  td:first-child{font-weight:600}
+  .search{width:100%;padding:10px 12px;margin-bottom:12px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font-size:1rem}
+  .hide td.h{filter:blur(7px);cursor:pointer}
+  .toggle{margin-bottom:12px;color:var(--muted);font-size:.95rem;display:flex;align-items:center;gap:8px}
+  /* flashcards */
+  .flip{perspective:900px;height:230px;cursor:pointer;margin-bottom:16px}
+  .flip-in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .flip.on .flip-in{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;border-radius:16px;border:1px solid var(--line);background:var(--card);padding:16px}
+  .face.back{transform:rotateY(180deg)}
+  .big{font-size:2rem;font-weight:700}
+  .sub{color:var(--muted);margin-top:6px}
+  .forms{font-size:1.4rem;line-height:1.7}
+  .row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .btn{border:none;background:var(--accent);color:#fff;padding:11px 20px;border-radius:10px;font-size:1rem;cursor:pointer}
+  .btn.sec{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+  .btn.ok{background:var(--ok)}.btn.bad{background:var(--bad)}
+  .counter{text-align:center;color:var(--muted);margin-bottom:10px}
+  /* practice */
+  .q-head{text-align:center;margin-bottom:14px}
+  .inputs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+  .inputs label{font-size:.85rem;color:var(--muted);display:block;margin-bottom:4px}
+  .inputs input{width:100%;padding:12px;font-size:1.1rem;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+  .inputs input.ok{border-color:var(--ok)}.inputs input.bad{border-color:var(--bad)}
+  .fb{min-height:1.6em;text-align:center;font-weight:600;margin-bottom:10px}
+  .fb.ok{color:var(--ok)}.fb.bad{color:var(--bad)}
+  .score{display:flex;justify-content:space-around;margin-top:16px;color:var(--muted);font-size:.95rem}
+  .bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-bottom:16px}
+  .bar div{height:100%;background:var(--accent);width:0;transition:width .3s}
+  .done{text-align:center}
+  @media(max-width:480px){.inputs{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🇬🇧 Irregular Verbs</h1>
+  <p>Unregelmäßige Verben lernen – Liste, Karteikarten, Üben</p>
+</header>
+<nav>
+  <button data-tab="list" class="active">📋 Liste</button>
+  <button data-tab="cards">🃏 Karteikarten</button>
+  <button data-tab="practice">✍️ Üben</button>
+</nav>
+<main>
+
+<section id="list" class="panel active">
+  <div class="card">
+    <input id="search" class="search" placeholder="Suchen (Englisch oder Deutsch)…">
+    <label class="toggle"><input type="checkbox" id="hideToggle"> Formen verdecken (zum Selbsttest, zum Anzeigen anklicken)</label>
+    <table id="tbl">
+      <thead><tr><th>Infinitive</th><th>Simple past</th><th>Past participle</th><th>Deutsch</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="cards" class="panel">
+  <div class="counter" id="cCount"></div>
+  <div class="flip" id="flip"><div class="flip-in">
+    <div class="face"><div class="big" id="cFront"></div><div class="sub">Tippen zum Umdrehen</div></div>
+    <div class="face back"><div class="forms" id="cBack"></div></div>
+  </div></div>
+  <div class="row">
+    <button class="btn sec" id="prev">← Zurück</button>
+    <button class="btn sec" id="shuffle">🔀 Mischen</button>
+    <button class="btn sec" id="dir">Englisch → Deutsch</button>
+    <button class="btn" id="next">Weiter →</button>
+  </div>
+</section>
+
+<section id="practice" class="panel">
+  <div class="card" id="pCard"></div>
+</section>
+
+</main>
+
+<script>
+const VERBS=[
+ ["do","did","done","tun, machen"],
+ ["go","went","gone","gehen, fahren"],
+ ["see","saw","seen","sehen"],
+ ["have","had","had","haben"],
+ ["be","was/were","been","sein"],
+ ["meet","met","met","treffen"],
+ ["sleep","slept","slept","schlafen"],
+ ["take","took","taken","nehmen"],
+ ["come","came","come","kommen"],
+ ["buy","bought","bought","kaufen"],
+ ["eat","ate","eaten","essen"],
+ ["get","got","got","bekommen, werden"],
+ ["make","made","made","machen, herstellen"],
+ ["read","read","read","lesen"],
+ ["write","wrote","written","schreiben"]
+];
+const $=s=>document.querySelector(s);
+
+/* Tabs */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active',p.id===b.dataset.tab));
+});
+
+/* Liste */
+function renderList(){
+  const q=$('#search').value.toLowerCase().trim();
+  $('#tbl tbody').innerHTML=VERBS.filter(v=>!q||v.join(' ').toLowerCase().includes(q))
+    .map(v=>`<tr><td>to ${v[0]}</td><td class="h">${v[1]}</td><td class="h">${v[2]}</td><td>${v[3]}</td></tr>`).join('');
+  document.querySelectorAll('td.h').forEach(td=>td.onclick=()=>td.style.filter='none');
+}
+$('#search').oninput=renderList;
+$('#hideToggle').onchange=e=>{$('#tbl').classList.toggle('hide',e.target.checked);renderList()};
+renderList();
+
+/* Karteikarten */
+let deck=[...VERBS],ci=0,toDE=true;
+function showCard(){
+  const v=deck[ci];
+  $('#flip').classList.remove('on');
+  $('#cCount').textContent=`Karte ${ci+1} / ${deck.length}`;
+  setTimeout(()=>{
+    if(toDE){
+      $('#cFront').textContent='to '+v[0];
+      $('#cBack').innerHTML=`${v[0]} – <b>${v[1]}</b> – <b>${v[2]}</b><div class="sub">${v[3]}</div>`;
+    }else{
+      $('#cFront').textContent=v[3];
+      $('#cBack').innerHTML=`${v[0]}<br><b>${v[1]}</b> – <b>${v[2]}</b>`;
+    }
+  },150);
+}
+$('#flip').onclick=()=>$('#flip').classList.toggle('on');
+$('#next').onclick=()=>{ci=(ci+1)%deck.length;showCard()};
+$('#prev').onclick=()=>{ci=(ci-1+deck.length)%deck.length;showCard()};
+$('#shuffle').onclick=()=>{deck=shuf([...VERBS]);ci=0;showCard()};
+$('#dir').onclick=()=>{toDE=!toDE;$('#dir').textContent=toDE?'Englisch → Deutsch':'Deutsch → Englisch';showCard()};
+document.addEventListener('keydown',e=>{
+  if(!$('#cards').classList.contains('active'))return;
+  if(e.key==='ArrowRight')$('#next').click();
+  if(e.key==='ArrowLeft')$('#prev').click();
+  if(e.key===' '){e.preventDefault();$('#flip').click()}
+});
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+showCard();
+
+/* Üben */
+let queue,qi,right,wrong,checked,best=0;
+try{best=+localStorage.getItem('iv_best')||0}catch(e){}
+function norm(s){return s.trim().toLowerCase()}
+function ok(input,sol){return sol.split('/').map(norm).includes(norm(input))}
+function startPractice(){queue=shuf([...VERBS]);qi=0;right=0;wrong=0;renderQ()}
+function renderQ(){
+  const c=$('#pCard');
+  if(qi>=queue.length){
+    if(right>best){best=right;try{localStorage.setItem('iv_best',best)}catch(e){}}
+    c.innerHTML=`<div class="done"><div class="big">🎉 Fertig!</div>
+      <p>Richtig: <b>${right}</b> von ${queue.length*2} Formen<br>Bestwert: ${best}</p>
+      <button class="btn" onclick="startPractice()">Nochmal üben</button></div>`;
+    return;
+  }
+  const v=queue[qi];checked=false;
+  c.innerHTML=`<div class="bar"><div style="width:${qi/queue.length*100}%"></div></div>
+    <div class="q-head"><div class="big">to ${v[0]}</div><div class="sub">${v[3]}</div></div>
+    <div class="inputs">
+      <div><label>Simple past</label><input id="a1" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+      <div><label>Past participle</label><input id="a2" autocomplete="off" autocapitalize="off" spellcheck="false"></div>
+    </div>
+    <div class="fb" id="fb"></div>
+    <div class="row"><button class="btn" id="chk">Prüfen</button></div>
+    <div class="score"><span>✅ ${right}</span><span>❌ ${wrong}</span><span>Frage ${qi+1}/${queue.length}</span></div>`;
+  $('#a1').focus();
+  $('#chk').onclick=check;
+  c.querySelectorAll('input').forEach(i=>i.onkeydown=e=>{
+    if(e.key==='Enter'){ if(i.id==='a1'&&!checked) $('#a2').focus(); else check(); }
+  });
+}
+function check(){
+  const v=queue[qi];
+  if(checked){qi++;renderQ();return}
+  checked=true;
+  const r1=ok($('#a1').value,v[1]),r2=ok($('#a2').value,v[2]);
+  $('#a1').classList.add(r1?'ok':'bad');$('#a2').classList.add(r2?'ok':'bad');
+  right+=r1+r2;wrong+=(!r1)+(!r2);
+  const fb=$('#fb');
+  if(r1&&r2){fb.className='fb ok';fb.textContent='Perfekt! ✓'}
+  else{fb.className='fb bad';fb.textContent=`Richtig wäre: ${v[0]} – ${v[1]} – ${v[2]}`}
+  $('#chk').textContent='Weiter →';
+}
+startPractice();
+</script>
+</body>
+</html>
